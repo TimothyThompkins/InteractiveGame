@@ -19,7 +19,7 @@
 DEVICE     = atmega328p
 CLOCK      = 20000000    # 8 MHz in Hz
 PROGRAMMER = -c dragon_isp
-FUSES      = -U lfuse:w:0xe2:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
+FUSES      = -U lfuse:w:0xf7:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
 OBJECTS    = main.o #DHT22.o pcd8544.o #main.o #Temperature_Sensor_v2.o
 
 # ATMega8 fuse bits used above (fuse bits for other devices are different!):
@@ -34,10 +34,10 @@ OBJECTS    = main.o #DHT22.o pcd8544.o #main.o #Temperature_Sensor_v2.o
 #        | +------------------ WDTON (if set to 0, watchdog is always on)
 #        +-------------------- RSTDISBL (if set to 0, RESET pin is disabled)
 # Fuse low byte:
-# 0xe2 = 1 1 1 0   0 0 1 0
+# 0xf7 = 1 1 1 1   0 1 1 1		 
 #        ^ ^ \ /   \--+--/
-#        | |  |       +------- CKSEL 3..0 (8M internal RC)
-#        | |  +--------------- SUT 1..0 (slowly rising power)
+#        | |  |       +------- CKSEL 3..0 (20Mhz External Full Swing Crystal)
+#        | |  +--------------- SUT 1..0 (slowly rising power 65ms)
 #        | +------------------ BODEN (if 0, brown-out detector is enabled)
 #        +-------------------- BODLEVEL (if 0: 4V, if 1: 2.7V)
 #
@@ -48,7 +48,7 @@ OBJECTS    = main.o #DHT22.o pcd8544.o #main.o #Temperature_Sensor_v2.o
 # Tune the lines below only if you know what you are doing:
 
 AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
+COMPILE = avr-gcc -std=c99 -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
 
 # symbolic targets:
 all:	main.hex

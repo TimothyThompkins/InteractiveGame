@@ -16,12 +16,12 @@
 #define 	UCSRC 	UCSR0C
 #define 	UBRRH 	UBRR0H
 #define 	UBRRL 	UBRR0L
-#define 	UDRE 	UDRE0
+#define 	UDRE 		UDRE0
 #define 	UDR 		UDR0
 #define 	RXC 		RXC0
-#define TXEN		TXEN0
-#define RXEN		RXEN0
-#define RXCIE	RXCIE0
+#define 	TXEN		TXEN0
+#define 	RXEN		RXEN0
+#define 	RXCIE		RXCIE0
 
 // Define baud rate
 #define USART_BAUDRATE 9600
@@ -126,32 +126,32 @@ int main(void)
 	while(1)
 	{
 		//This is a hello world the LED's
-		for (uint8_t i = 5; i<=7; i++)
-		{ //Start at 5 b/c the first LED is connected to PD5
-		PORTD ^= 1<<i;
-		_delay_ms(1000);//This is a 20ms delay
-		}
-
-		for (uint8_t i = 0; i<=2; i++)
-		{
-		PORTB ^= 1<<i;
-		_delay_ms(1000);//This is a 20ms delay
-		}
-
-		//USART_SendByte(value);  // send value
-		//data = USART_ReceiveByte();
-
-		if (data == 'U')
-		{
-			//USART_SendByte('T');  // Send value
-			//_delay_ms(100);
-		}
-
-		else
-		{
-			//USART_SendByte('N');  // Send value
-			//_delay_ms(100);
-		}
+		// for (uint8_t i = 5; i<=7; i++)
+		// { //Start at 5 b/c the first LED is connected to PD5
+		// PORTD ^= 1<<i;
+		// _delay_ms(1000);//This is a 20ms delay
+		// }
+		//
+		// for (uint8_t i = 0; i<=2; i++)
+		// {
+		// PORTB ^= 1<<i;
+		// _delay_ms(1000);//This is a 20ms delay
+		// }
+		//
+		// //USART_SendByte(value);  // send value
+		// //data = USART_ReceiveByte();
+		//
+		// if (data == 'U')
+		// {
+		// 	//USART_SendByte('T');  // Send value
+		// 	//_delay_ms(100);
+		// }
+		//
+		// else
+		// {
+		// 	//USART_SendByte('N');  // Send value
+		// 	//_delay_ms(100);
+		// }
 
 		if (PINC & (1<<PC2))
 		{
