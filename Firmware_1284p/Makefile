@@ -16,11 +16,11 @@
 #                   default_serial = "avrdoper"
 # FUSES ........ Parameters for avrdude to flash the fuses appropriately.
 
-DEVICE     = atmega328p
-CLOCK      = 20000000    # 8 MHz in Hz
+DEVICE     = atmega1284p
+CLOCK      = 20000000    # 20 MHz in Hz
 PROGRAMMER = -c dragon_isp
-FUSES      = -U lfuse:w:0xf7:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
-OBJECTS    = main.o #DHT22.o pcd8544.o #main.o #Temperature_Sensor_v2.o
+FUSES      = -U lfuse:w:0xf7:m -U hfuse:w:0x99:m -U efuse:w:0xff:m
+OBJECTS    = main.o serial_comms.o #pcd8544.o #main.o #Temperature_Sensor_v2.o
 
 # ATMega8 fuse bits used above (fuse bits for other devices are different!):
 # Example for 8 MHz internal oscillator
@@ -53,7 +53,7 @@ COMPILE = avr-gcc -std=c99 -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
 # symbolic targets:
 all:	main.hex
 
-main.hex: main.o #DHT22.o pcd8544.o
+main.hex: main.o serial_comms.o #pcd8544.o
 
 .c.o:
 	$(COMPILE) -c $< -o $@
