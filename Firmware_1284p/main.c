@@ -15,6 +15,8 @@
 
 #include "serial_comms.h"
 
+extern volatile uint8_t receivedByte;
+
 void pinConfig() {
 
 	DDRB = 0b00001000;
@@ -42,10 +44,16 @@ int main(void)
 					PORTB &= ~(1<<PB3);
 				}
 
-
 				if (PINC & (1<<PC7)) {
 					PORTB |= (1<<PB3);
 					USART_SendByte(data2);
+				}
+				else {
+					PORTB &= ~(1<<PB3);
+				}
+
+				if (receivedByte == 'k') {
+					PORTB |= (1<<PB3);
 				}
 				else {
 					PORTB &= ~(1<<PB3);

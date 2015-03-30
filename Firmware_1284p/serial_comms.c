@@ -9,10 +9,12 @@
 
 #include "serial_comms.h"
 
+volatile uint8_t receivedByte;
+
 ISR(USART0_RX_vect) {
 
-	char receivedByte;
 	receivedByte = UDR0; // Fetch the received byte value into the variable "receivedByte"
+
 }
 
 void USART_Init_Interrupt(unsigned int ubps) {
