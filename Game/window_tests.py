@@ -5,8 +5,9 @@ architecture = (platform.processor())
 if architecture == 'arm':
     print ('Still need to develop pi program')
 
-from Tkinter import Tk, BOTH
-from ttk import Frame, Button, Style
+from tkinter import *
+from tkinter import ttk
+#from ttk import Frame, Button, Style
 
 
 class Example(Frame):
@@ -40,4 +41,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()  
+    main()

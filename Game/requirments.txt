@@ -1,2 +1,3 @@
 pyserial==4.3.2
 numserial==2.1.21
+#Remember to install Tkinter
