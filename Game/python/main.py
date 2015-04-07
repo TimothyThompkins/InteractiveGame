@@ -23,8 +23,10 @@ def _start(system):
     root.resizable(0,0)
 
     initial_window = startWindow(root, system)
-    initial_window.bind('<select-new-game>', startWindow)
     initial_window.pack(fill=BOTH, expand=YES)
+
+    #root.lift()
+    #root.call('wm', 'attributes', '.', '-topmost', True) # Bring window to front, should work
 
     root.mainloop()
 
@@ -32,6 +34,7 @@ def main():
 
     system = sys_config() # Create a new system on which to run
     _start(system)
+    print ('here')
 
 if __name__ == '__main__':
     main()

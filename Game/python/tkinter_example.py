@@ -171,7 +171,11 @@ class MyApp:
       )
 
   def cancelButtonClick(self, event):
-    self.myParent.destroy()
+    try:
+        self.myParent.destroy()
+        
+    except:
+        print ("couldn't close")
 
 root = Tk()
 myapp = MyApp(root)
