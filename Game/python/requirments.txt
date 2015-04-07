@@ -1,0 +1,23 @@
+pyserial==4.3.2
+numserial==2.1.21
+Pillow==2.8.1
+
+
+# This is to get pillow to work with python 3 on ubuntu 14
+# http://stackoverflow.com/questions/23970006/using-pillow-with-python-3
+
+$ sudo apt-get install python3-dev python3-setuptools
+
+$ sudo apt-get install libtiff4-dev libjpeg8-dev zlib1g-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev tcl8.5-dev tk8.5-dev python-tk
+
+$ sudo apt-get install python3-pip
+
+$ sudo pip3 install Pillow
+
+$ sudo apt-get install imagemagick
+
+$ sudo ln -s /usr/bin/display /usr/bin/xv
+
+# Hot fix the get libraries correct ldconfig /usr/local/lib
+# That's for libopenjp2.so.7
