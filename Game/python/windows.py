@@ -2,21 +2,50 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from config import sys_config
+from serial_comms import get_port_options
+from serial_comms import get_baud_options
 
 class startWindow(Frame):
 
     def __init__(self, master, system, *pargs):
         Frame.__init__(self, master, *pargs)
 
-
         def _start_new_game():
-            input_choice = self.var.get()
+            user_input_choice = self.input_selection.get()
             self.master.destroy()
-
 
         def _load_old_game():
-            input_choice = self.var.get()
+            user_input_choice = self.input_selection.get()
             self.master.destroy()
+
+# TMT Left off here. Trying to get user clicked menu option. Also trying to change that option to display the one you clicked
+        def _select_port(menu):
+            #port_selection = self.text.get()
+            menu.entryconfigure(1, label="Clicked!")
+            #print(port_selection)
+            print (u"\u2022")
+
+        # Implement update method. postcommand=update
+        serial_ports = get_port_options()
+        baudrates = get_baud_options()
+
+        menubar = Menu(master)
+        tools_menu = Menu(master)
+        portOptionsMenu = Menu(master)
+        baudOptionsMenu = Menu(master)
+
+        menubar.add_cascade(label="Tools", menu=tools_menu)
+
+        tools_menu.add_cascade(label="Ports", menu=portOptionsMenu)
+        for name in (serial_ports):
+            portOptionsMenu.add_command(label=name, command=_select_port(portOptionsMenu))
+
+        tools_menu.add_cascade(label="Baudrate", menu=baudOptionsMenu)
+        for name in (baudrates):
+            baudOptionsMenu.add_command(label=name)
+
+        master.config(menu=menubar)
+
 
         # This loads the background image
         self.image = Image.open("Space_Invaders_Background_Image.gif") # Pillow is needed to import a background image
@@ -39,9 +68,9 @@ class startWindow(Frame):
         # Select User Input Box
         input_options = system.get_sys_input_options()
 
-        self.var = StringVar(master)
-        self.var.set(input_options[0]) # initial value
-        selected_input = ttk.Combobox(self, textvariable=self.var, state='readonly', values = input_options)
+        self.input_selection = StringVar(master)
+        self.input_selection.set(input_options[0]) # initial value
+        selected_input = ttk.Combobox(self, textvariable=self.input_selection, state='readonly', values=input_options)
         selected_input.current(0)
         selected_input.pack(expand=NO, side=BOTTOM, pady=17, padx=0)
 
@@ -59,3 +88,5 @@ class startWindow(Frame):
 #class calibrateCameraInput():
 
 #class gameWindow(Frame):
+
+#class spashScreen(Frame):
