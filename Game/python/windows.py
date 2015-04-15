@@ -30,9 +30,9 @@ class startWindow(Frame):
         baudrates = get_baud_options()
 
         menubar = Menu(master)
-        tools_menu = Menu(master)
-        portOptionsMenu = Menu(master)
-        baudOptionsMenu = Menu(master)
+        tools_menu = Menu(master, tearoff=0)
+        portOptionsMenu = Menu(master, tearoff=0)
+        baudOptionsMenu = Menu(master, tearoff=0)
 
         menubar.add_cascade(label="Tools", menu=tools_menu)
 
