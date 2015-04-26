@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from config import sys_config
 from serial_comms import get_port_options
 from serial_comms import get_baud_options
+import re
 
 class startWindow(Frame):
 
@@ -18,18 +19,49 @@ class startWindow(Frame):
             user_input_choice = self.input_selection.get()
             self.master.destroy()
 
-# TMT Left off here. Trying to get user clicked menu option. Also trying to change that option to display the one you clicked
-        def _select_port(menu):
-            #port_selection = self.text.get()
-            menu.entryconfigure(1, label="Clicked!")
-            #print(port_selection)
-            print (u"\u2022")
-
-        # Implement update method. postcommand=update
         serial_ports = get_port_options()
-        baudrates = get_baud_options()
+        baud_rates = get_baud_options()
 
-        menubar = Menu(master)
+        map_serial_ports = {}
+        map_baud_rates = {}
+
+
+        for i, name in enumerate(serial_ports):
+            def new_command(i=i):
+                port_selection = portOptionsMenu.entrycget(i,'label')
+
+                #This if just removes the bullet character if the user reselects the same port
+                if (port_selection.find(u"\u2022") == 0):
+                    port_selection = port_selection.strip("\u2022")
+
+                for k, name in enumerate(serial_ports):
+                    portOptionsMenu.entryconfigure(k, label=serial_ports[k])
+
+                portOptionsMenu.entryconfigure(i, label=u"\u2022" + port_selection)
+
+            map_serial_ports[i] = new_command
+
+        for i, name in enumerate(baud_rates):
+            def new_command(i=i):
+                baud_selection = baudOptionsMenu.entrycget(i,'label')
+                baud_selection = str(baud_selection) # Must convert baud_rate to string for menu manipliation
+
+                #This if just removes the bullet character if the user reselects the same baud rate
+                if (baud_selection.find(u"\u2022") == 0):
+                    baud_selection = baud_selection.strip("\u2022")
+
+                for k, name in enumerate(baud_rates):
+                    baudOptionsMenu.entryconfigure(k, label=baud_rates[k])
+
+                baudOptionsMenu.entryconfigure(i, label=u"\u2022" + baud_selection)
+
+                baud_selection = int(baud_selection) # Converts baud_rate back to int for program manipulation
+                #TMT Left off here
+
+            map_baud_rates[i] = new_command
+
+
+        menubar = Menu(master, tearoff=0)
         tools_menu = Menu(master, tearoff=0)
         portOptionsMenu = Menu(master, tearoff=0)
         baudOptionsMenu = Menu(master, tearoff=0)
@@ -37,12 +69,12 @@ class startWindow(Frame):
         menubar.add_cascade(label="Tools", menu=tools_menu)
 
         tools_menu.add_cascade(label="Ports", menu=portOptionsMenu)
-        for name in (serial_ports):
-            portOptionsMenu.add_command(label=name, command=_select_port(portOptionsMenu))
+        for i, name in enumerate(serial_ports):
+            portOptionsMenu.add_command(label=name, command=map_serial_ports[i])
 
-        tools_menu.add_cascade(label="Baudrate", menu=baudOptionsMenu)
-        for name in (baudrates):
-            baudOptionsMenu.add_command(label=name)
+        tools_menu.add_cascade(label="Baud Rates", menu=baudOptionsMenu)
+        for i, name in enumerate(baud_rates):
+            baudOptionsMenu.add_command(label=name, command=map_baud_rates[i])
 
         master.config(menu=menubar)
 

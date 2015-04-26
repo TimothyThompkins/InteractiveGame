@@ -1,14 +1,27 @@
-from tkinter import *
+import tkinter
 
-root = Tk()
-menu_bar = Menu(root)
+def make_menu(w):
+    global the_menu
+    the_menu = tkinter.Menu(w, tearoff=0)
+    the_menu.add_command(label="Cut")
+    the_menu.add_command(label="Copy")
+    the_menu.add_command(label="Paste")
 
-def clicked(menu):
-    menu.entryconfigure(1, label="Clicked!")
+def show_menu(e):
+    w = e.widget
+    the_menu.entryconfigure("Cut",
+    command=lambda: w.event_generate("<<Cut>>"))
+    the_menu.entryconfigure("Copy",
+    command=lambda: w.event_generate("<<Copy>>"))
+    the_menu.entryconfigure("Paste",
+    command=lambda: w.event_generate("<<Paste>>"))
+    the_menu.tk.call("tk_popup", the_menu, e.x_root, e.y_root)
 
-file_menu = Menu(menu_bar, tearoff=False)
-file_menu.add_command(label="An example item", command=lambda: clicked(file_menu))
-menu_bar.add_cascade(label="File", menu=file_menu)
+t = tkinter.Tk()
+make_menu(t)
 
-root.config(menu=menu_bar)
-root.mainloop()
+e1 = tkinter.Entry(); e1.pack()
+e2 = tkinter.Entry(); e2.pack()
+e1.bind_class("Entry", "<Button-3><ButtonRelease-3>", show_menu)
+
+t.mainloop()
