@@ -34,3 +34,12 @@ class sys_config(object):
 
     def get_sys_input_options(self):
         return self.input_options
+
+    #def set_game_options(self, new_game, input_method, serial_port, baud_rate):
+    def set_game_options(self, new_game, input_method,baud_rate):
+        new_game = new_game
+        input_method = input_method
+        #serial_port = serial_port
+        baud_rate = baud_rate
+
+        print (new_game, input_method, baud_rate)

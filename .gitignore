@@ -52,3 +52,4 @@ improvements.txt
 progressTracker.txt
 Tests/
 SI_SRC/
+__pycache__/
