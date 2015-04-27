@@ -4,6 +4,12 @@ class sys_config(object):
 
     def __init__(self):
 
+        # These are what we need for each instance of game
+        self.new_game = None
+        self.input_method = None
+        self.serial_port = None
+        self.baud_rate = None
+
         architecture = (platform.processor())
 
         if architecture == 'arm':
@@ -35,11 +41,17 @@ class sys_config(object):
     def get_sys_input_options(self):
         return self.input_options
 
-    #def set_game_options(self, new_game, input_method, serial_port, baud_rate):
-    def set_game_options(self, new_game, input_method,baud_rate):
-        new_game = new_game
-        input_method = input_method
-        #serial_port = serial_port
-        baud_rate = baud_rate
+    def set_new_game(self, new_game):
+        self.new_game = new_game
 
-        print (new_game, input_method, baud_rate)
+    def set_input_method(self, input_method):
+        self.input_method = input_method
+
+    def set_serial_port(self, serial_port):
+        self.serial_port = serial_port
+
+    def set_baud_rate(self, baud_rate):
+        self.baud_rate = baud_rate
+
+    def print_data(self):
+        print (self.new_game, self.input_method, self.serial_port, self.baud_rate)

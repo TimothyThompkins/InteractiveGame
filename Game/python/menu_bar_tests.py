@@ -1,27 +1,24 @@
-import tkinter
+class Dog:
 
-def make_menu(w):
-    global the_menu
-    the_menu = tkinter.Menu(w, tearoff=0)
-    the_menu.add_command(label="Cut")
-    the_menu.add_command(label="Copy")
-    the_menu.add_command(label="Paste")
+    def __init__(self, name):
+        self.name = name
+        self.tricks = []    # creates a new empty list for each dog
 
-def show_menu(e):
-    w = e.widget
-    the_menu.entryconfigure("Cut",
-    command=lambda: w.event_generate("<<Cut>>"))
-    the_menu.entryconfigure("Copy",
-    command=lambda: w.event_generate("<<Copy>>"))
-    the_menu.entryconfigure("Paste",
-    command=lambda: w.event_generate("<<Paste>>"))
-    the_menu.tk.call("tk_popup", the_menu, e.x_root, e.y_root)
+    def add_trick(self, trick):
+        self.tricks.append(trick)
 
-t = tkinter.Tk()
-make_menu(t)
+    def change_name(self, name):
+        self.name = name
 
-e1 = tkinter.Entry(); e1.pack()
-e2 = tkinter.Entry(); e2.pack()
-e1.bind_class("Entry", "<Button-3><ButtonRelease-3>", show_menu)
+    def get_name(self, name):
+        return self.name
 
-t.mainloop()
+d = Dog('Fido')
+e = Dog('Buddy')
+d.add_trick('roll over')
+e.add_trick('play dead')
+print(d.tricks)
+print(e.tricks)
+print (e.name)
+e.change_name("Dick")
+print(e.name)

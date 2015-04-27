@@ -4,6 +4,7 @@ import serial
 #import time
 
 baudrates = [110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200]
+error_msg = "Error: No Serial ports available"
 
 class serial_comms:
 
@@ -46,10 +47,11 @@ def get_port_options():
             result.append(port)
         except (OSError, serial.SerialException):
             pass
-    return result
 
-    #def get_serial_ports(self):
-    #    return self.serial_ports()
+    if len(result) == 0:
+        result.append(error_msg)
+
+    return result
 
 def get_baud_options():
     return baudrates

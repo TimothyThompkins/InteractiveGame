@@ -63,6 +63,7 @@ def main():
 
     system = sys_config() # Create a new system on which to run
     _start(system)
+    system.print_data()
     print ('Execution Ended')
 
 

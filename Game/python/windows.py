@@ -11,22 +11,22 @@ class startWindow(Frame):
         Frame.__init__(self, master, *pargs)
 
         def _start_new_game():
+            #try:
             new_game = True
+            system.set_new_game(new_game)
             user_input_choice = self.input_selection.get()
-            system.set_game_options(new_game, user_input_choice, user_port_selection, user_baud_selection)
-            #system.set_game_options(new_game, user_input_choice, user_baud_selection)
+            system.set_input_method(user_input_choice)
+            #except:
+
             #TMT add error handling here in case user doesn't select baud rate and serial port
             self.master.destroy()
 
         def _load_old_game():
             new_game = False
+            system.set_new_game(new_game)
             user_input_choice = self.input_selection.get()
+            system.set_input_method(user_input_choice)
             self.master.destroy()
-
-        #def _set_user_port_selection():
-
-        #def _set_user_baud_selection(user_baud_selection):
-        #    user_baud_selection = user_baud_selection
 
         serial_ports = get_port_options()
         baud_rates = get_baud_options()
@@ -34,26 +34,26 @@ class startWindow(Frame):
         map_serial_ports = {}
         map_baud_rates = {}
 
-        #user_port_selection = None
-        #user_baud_selection = None
-
 
         # Creates a new function for each entry in the tool bar menu options. Each function has the same name & is stored in map_X[]
         for i, name in enumerate(serial_ports):
             def new_command(i=i):
                 port_selection = portOptionsMenu.entrycget(i,'label')
 
-                #This if just removes the bullet character if the user reselects the same port
+                # This if just removes the bullet character if the user reselects the same port
                 if (port_selection.find(u"\u2022") == 0):
                     port_selection = port_selection.strip("\u2022")
 
-                for k, name in enumerate(serial_ports):
-                    portOptionsMenu.entryconfigure(k, label=serial_ports[k])
+                # If the port selection contains the word 'Error', we know that there are no ports to be selected
+                if (port_selection.find("Error") < 0):
 
-                portOptionsMenu.entryconfigure(i, label=port_selection + u"\u2022")
+                    for k, name in enumerate(serial_ports):
+                        portOptionsMenu.entryconfigure(k, label=serial_ports[k])
 
-                user_port_selection = port_selection
-                #return user_port_selection
+                    portOptionsMenu.entryconfigure(i, label=port_selection + u"\u2022")
+
+                    system.set_serial_port(port_selection)# Set system variable
+
 
             map_serial_ports[i] = new_command
 
@@ -71,10 +71,8 @@ class startWindow(Frame):
 
                 baudOptionsMenu.entryconfigure(i, label=baud_selection + u"\u2022")
 
-                baud_selection = int(baud_selection) # Converts baud_rate back to int for program manipulation
-                user_baud_selection = baud_selection
+                system.set_baud_rate(int(baud_selection))# Converts baud_rate back to int for program manipulation and sets system variable
 
-                #_set_user_baud_selection(user_baud_selection)
 
             map_baud_rates[i] = new_command
 
@@ -135,7 +133,7 @@ class startWindow(Frame):
         self.background_image = ImageTk.PhotoImage(self.image)
         self.background.configure(image =  self.background_image)
 
-class game_parameters():
+#class game_parameters():
         #new_game, user_input_choice, user_port_selection, user_baud_selection
         #TMT make class to hold game parameters maybe?
 
