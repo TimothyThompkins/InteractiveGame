@@ -1,24 +1,46 @@
-class Dog:
+from tkinter import *
+from tkinter import ttk
 
-    def __init__(self, name):
-        self.name = name
-        self.tricks = []    # creates a new empty list for each dog
+root = Tk()
 
-    def add_trick(self, trick):
-        self.tricks.append(trick)
+content = ttk.Frame(root)
+frame = ttk.Frame(content, borderwidth=5, relief="sunken", width=200, height=100)
+namelbl = ttk.Label(content, text="Name")
+name = ttk.Entry(content)
 
-    def change_name(self, name):
-        self.name = name
+onevar = BooleanVar()
+twovar = BooleanVar()
+threevar = BooleanVar()
+onevar.set(True)
+twovar.set(False)
+threevar.set(True)
 
-    def get_name(self, name):
-        return self.name
+one = ttk.Checkbutton(content, text="One", variable=onevar, onvalue=True)
+two = ttk.Checkbutton(content, text="Two", variable=twovar, onvalue=True)
+three = ttk.Checkbutton(content, text="Three", variable=threevar, onvalue=True)
+ok = ttk.Button(content, text="Okay")
+cancel = ttk.Button(content, text="Cancel")
 
-d = Dog('Fido')
-e = Dog('Buddy')
-d.add_trick('roll over')
-e.add_trick('play dead')
-print(d.tricks)
-print(e.tricks)
-print (e.name)
-e.change_name("Dick")
-print(e.name)
+content.grid(column=0, row=0)
+frame.grid(column=0, row=0, columnspan=3, rowspan=2)
+namelbl.grid(column=3, row=0, columnspan=2)
+name.grid(column=3, row=1, columnspan=2)
+one.grid(column=0, row=3)
+two.grid(column=1, row=3)
+three.grid(column=2, row=3)
+ok.grid(column=3, row=3)
+cancel.grid(column=4, row=3)
+
+root.mainloop()
+
+# def f(x):
+#     return g(x) + 1
+#
+# def g(x):
+#     if x < 0: raise ValueError, "I can't cope with a negative number here."
+#     else: return 5
+#
+# try:
+#     print f(-6)
+# except ValueError:
+#     print "That value was invalid."

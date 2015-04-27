@@ -32,6 +32,7 @@ class sys_config(object):
 
             self.input_options = ['Arrow Keys','Web Cam']
 
+    # Get Data
     def get_start_window_dim(self):
         return (self.start_window_width, self.start_window_height)
 
@@ -41,6 +42,13 @@ class sys_config(object):
     def get_sys_input_options(self):
         return self.input_options
 
+    def get_serial_port(self):
+        return self.serial_port
+
+    def get_baud_rate(self):
+        return self.baud_rate
+
+    # Set Data
     def set_new_game(self, new_game):
         self.new_game = new_game
 
@@ -52,6 +60,7 @@ class sys_config(object):
 
     def set_baud_rate(self, baud_rate):
         self.baud_rate = baud_rate
+
 
     def print_data(self):
         print (self.new_game, self.input_method, self.serial_port, self.baud_rate)

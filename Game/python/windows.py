@@ -1,25 +1,52 @@
 from tkinter import *
 from tkinter import ttk
+import tkinter.messagebox
 from PIL import Image, ImageTk
 from config import sys_config
 from serial_comms import get_port_options
 from serial_comms import get_baud_options
+from errors import *
+
+serial_error_msg = u"\u2022" + "Please select a serial port!"
+baud_error_msg = u"\u2022" + "Please select a baud rate!"
+
+# TMT add help menu with design information
 
 class startWindow(Frame):
 
-    def __init__(self, master, system, *pargs):
+    def __init__(self, master, system, w, h, x, y, *pargs):
         Frame.__init__(self, master, *pargs)
 
+        # TMT add below code to load game too
         def _start_new_game():
-            #try:
             new_game = True
             system.set_new_game(new_game)
             user_input_choice = self.input_selection.get()
             system.set_input_method(user_input_choice)
-            #except:
 
-            #TMT add error handling here in case user doesn't select baud rate and serial port
-            self.master.destroy()
+            try:
+                user_serial_selection = system.get_serial_port()
+                user_baud_selection = system.get_baud_rate()
+
+                if user_serial_selection == None:
+                    raise serialPortDefError
+                if user_baud_selection == None:
+                    raise  baudRateDefError
+
+            except(serialPortDefError, baudRateDefError) as e:
+
+                if (user_serial_selection == None) and (user_baud_selection == None):
+                    serial_baud_error = error_window(w, h, x, y, serial_error_msg, baud_error_msg)
+
+                elif (user_serial_selection == None):
+                    serial_baud_error = error_window(w, h, x, y, serial_error_msg)
+
+                elif (user_baud_selection == None):
+                    serial_baud_error = error_window(w, h, x, y, baud_error_msg)
+
+            else:
+                #TMT add error handling here in case user doesn't select baud rate and serial port
+                self.master.destroy()
 
         def _load_old_game():
             new_game = False
@@ -104,14 +131,12 @@ class startWindow(Frame):
         self.background.bind('<Configure>', self._resize_start_window_image)# Automatically resizes the background
 
         # New Game Button
-        self.new_game_button = Button(self, width=25, text='New Game', font=('Helvetica', 10), command=_start_new_game)
+        self.new_game_button = Button(self, width=25, text='New Game', font=('Helvetica', 10), highlightbackground='#464646', command=_start_new_game)
         self.new_game_button.pack(expand=NO, side=BOTTOM, pady=11, padx=0)
-        #self.new_game_button.bind('<Button-1>', self._start_new_game)
 
         # Load Game Button
-        self.load_game = Button(self, width=25, text='Load Game', font=('Helvetica', 10), command=_load_old_game)
+        self.load_game = Button(self, width=25, text='Load Game', font=('Helvetica', 10), highlightbackground='#464646', command=_load_old_game)
         self.load_game.pack(expand=NO, side=BOTTOM, pady=0, padx=0)
-        #self.load_game.bind('<Button-1>', self._load_old_game)
 
         # Select User Input Box
         input_options = system.get_sys_input_options()
@@ -124,7 +149,6 @@ class startWindow(Frame):
 
 
     def _resize_start_window_image(self,event):
-
         new_width = event.width
         new_height = event.height
 
@@ -132,6 +156,46 @@ class startWindow(Frame):
 
         self.background_image = ImageTk.PhotoImage(self.image)
         self.background.configure(image =  self.background_image)
+
+class error_window(Frame):
+
+    # Can print up to 4 errors TMT add exception for this
+    # TMT add custom menu bar to error window
+    def __init__(self, w, h, x, y, *args):
+
+        def _release_window():
+            error_window.grab_release()
+            error_window.destroy()
+
+        error_window = Tk() # Create new error_window to work with Tkinter
+        error_window.grab_set()
+
+        error_window.title('Error')
+        error_window.configure(background='#E9E9E9')
+        #caution = PhotoImage(file="caution_image.gif")
+
+        #This is responsible for setting the dimensions of the window and where it is placed
+        error_window.geometry('%dx%d+%d+%d' % (w/2, h/3, (x+(w/4)), (y+(y/3))))
+        error_window.resizable(0,0)
+
+        #error_window.lift()
+        #error_window.call('wm', 'attributes', '.', '-topmost', True) # Bring window to front, should work
+
+        # Add Caution Image, not working right now TMT
+        # caution_image = Label(error_window, image=caution)
+        # caution_image.image = caution
+        # caution_image.pack(side=LEFT)
+        error_window.accept = Button(error_window, width=5, text='Accept', font=('Helvetica', 10), highlightbackground='#E9E9E9', command=_release_window)
+        error_window.accept.pack(expand=NO, side=BOTTOM, pady=0, padx=0)
+
+        blank_space = Label(error_window, background='#E9E9E9', highlightbackground='#E9E9E9')
+        blank_space.pack(side=TOP)
+
+        for msg, error_msg in enumerate(args):
+            current_msg = Label(error_window, text=error_msg, font=('Helvetica', 12, 'bold'), background='#E9E9E9', highlightbackground='#E9E9E9', foreground='black', justify=RIGHT)
+            current_msg.pack(side=TOP)
+
+        error_window.mainloop()
 
 #class game_parameters():
         #new_game, user_input_choice, user_port_selection, user_baud_selection

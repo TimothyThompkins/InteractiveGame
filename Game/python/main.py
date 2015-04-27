@@ -22,7 +22,7 @@ def _start(system):
     root.geometry('%dx%d+%d+%d' % (w, h, x, y))
     root.resizable(0,0)
 
-    initial_window = startWindow(root, system)
+    initial_window = startWindow(root, system, w, h, x, y)
     initial_window.pack(fill=BOTH, expand=YES)
 
     #root.lift()
@@ -55,7 +55,8 @@ def _game_window(system):
 
     #root.lift()
     #root.call('wm', 'attributes', '.', '-topmost', True) # Bring window to front, should work
-
+    root.focus()
+    
     root.mainloop()
 
 
