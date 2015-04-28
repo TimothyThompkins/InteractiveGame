@@ -7,8 +7,8 @@ from serial_comms import get_port_options
 from serial_comms import get_baud_options
 from errors import *
 
-serial_error_msg = u"\u2022" + "Please select a serial port!"
-baud_error_msg = u"\u2022" + "Please select a baud rate!"
+serial_error_msg = "Please select a serial port."
+baud_error_msg = "Please select a baud rate."
 
 # TMT add help menu with design information
 
@@ -103,7 +103,7 @@ class startWindow(Frame):
 
             map_baud_rates[i] = new_command
 
-
+        # Menu bar construction
         menubar = Menu(master, tearoff=0)
         tools_menu = Menu(master, tearoff=0)
         portOptionsMenu = Menu(master, tearoff=0)
@@ -122,13 +122,13 @@ class startWindow(Frame):
         master.config(menu=menubar)
 
 
-        # This loads the background image
+        # Loads the background image
         self.image = Image.open("Space_Invaders_Background_Image.gif") # Pillow is needed to import a background image
         self.img_copy= self.image.copy()
         self.background_image = ImageTk.PhotoImage(self.image)
         self.background = Label(self, image=self.background_image)
         self.background.place(x=0,y=0,relwidth=1, relheight=1)
-        self.background.bind('<Configure>', self._resize_start_window_image)# Automatically resizes the background
+        self.background.bind('<Configure>', self._resize_start_window_image) # Automatically resizes the background
 
         # New Game Button
         self.new_game_button = Button(self, width=25, text='New Game', font=('Helvetica', 10), highlightbackground='#464646', command=_start_new_game)
@@ -143,8 +143,9 @@ class startWindow(Frame):
 
         self.input_selection = StringVar(master)
         self.input_selection.set(input_options[0]) # initial value
-        selected_input = ttk.Combobox(self, textvariable=self.input_selection, state='readonly', values=input_options)
-        selected_input.current(0)
+        #selected_input = ttk.Combobox(self, textvariable=self.input_selection, background='#464646', state='readonly', values=input_options)
+        selected_input = OptionMenu(self, self.input_selection, *input_options)
+        selected_input.config(width=15, background='#464646', highlightbackground='#464646')
         selected_input.pack(expand=NO, side=BOTTOM, pady=17, padx=0)
 
 
@@ -159,7 +160,7 @@ class startWindow(Frame):
 
 class error_window(Frame):
 
-    # Can print up to 4 errors TMT add exception for this
+    # Can print up to 3 errors TMT add exception for this
     # TMT add custom menu bar to error window
     def __init__(self, w, h, x, y, *args):
 
@@ -167,32 +168,36 @@ class error_window(Frame):
             error_window.grab_release()
             error_window.destroy()
 
-        error_window = Tk() # Create new error_window to work with Tkinter
+        #error_window = Tk() # Create new error_window to work with Tkinter
+        error_window = Toplevel()
+
         error_window.grab_set()
+
+        # Adds blank menu bar
+        menubar = Menu(error_window, tearoff=0)
+        error_window.config(menu=menubar)
 
         error_window.title('Error')
         error_window.configure(background='#E9E9E9')
-        #caution = PhotoImage(file="caution_image.gif")
 
-        #This is responsible for setting the dimensions of the window and where it is placed
+        # This is responsible for setting the dimensions of the window and where it is placed
         error_window.geometry('%dx%d+%d+%d' % (w/2, h/3, (x+(w/4)), (y+(y/3))))
         error_window.resizable(0,0)
 
-        #error_window.lift()
-        #error_window.call('wm', 'attributes', '.', '-topmost', True) # Bring window to front, should work
+        error_window.close = Button(error_window, width=5, text='Close', font=('Helvetica', 10), highlightbackground='#E9E9E9', command=_release_window)
+        error_window.close.pack(expand=NO, side=BOTTOM, pady=0, padx=0)
 
-        # Add Caution Image, not working right now TMT
-        # caution_image = Label(error_window, image=caution)
-        # caution_image.image = caution
-        # caution_image.pack(side=LEFT)
-        error_window.accept = Button(error_window, width=5, text='Accept', font=('Helvetica', 10), highlightbackground='#E9E9E9', command=_release_window)
-        error_window.accept.pack(expand=NO, side=BOTTOM, pady=0, padx=0)
+        image = Image.open("error_image.gif")
+        #resize = image.resize((64, 64), Image.ANTIALIAS)
+        error_image = ImageTk.PhotoImage(image) # Keep a reference, prevent GC
+        error_image_label = Label(error_window, image=error_image, background='#E9E9E9', highlightbackground='#E9E9E9')
+        error_image_label.pack(side=LEFT, padx=6)
 
         blank_space = Label(error_window, background='#E9E9E9', highlightbackground='#E9E9E9')
         blank_space.pack(side=TOP)
 
         for msg, error_msg in enumerate(args):
-            current_msg = Label(error_window, text=error_msg, font=('Helvetica', 12, 'bold'), background='#E9E9E9', highlightbackground='#E9E9E9', foreground='black', justify=RIGHT)
+            current_msg = Label(error_window, text=str(msg+1) + ". " + error_msg, font=('Helvetica', 12), background='#E9E9E9', highlightbackground='#E9E9E9', foreground='black', justify='left')
             current_msg.pack(side=TOP)
 
         error_window.mainloop()
