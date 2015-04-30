@@ -169,7 +169,13 @@ class startWindow(Frame):
         self.input_selection.set(input_options[0]) # initial value
         #selected_input = ttk.Combobox(self, textvariable=self.input_selection, background='#464646', state='readonly', values=input_options)
         selected_input = OptionMenu(self, self.input_selection, *input_options)
-        selected_input.config(width=15, highlightbackground='#464646') #background='#464646', TMT test on OSX
+
+        if system.get_sys_platform() == 'OSX':
+            selected_input.config(width=15, background='#464646', highlightbackground='#464646') # OSX window's manager forces us to provide a background color
+
+        elif system.get_sys_platform() == 'linux':
+            selected_input.config(width=15)
+
         selected_input.pack(expand=NO, side=BOTTOM, pady=17, padx=0)
 
 
