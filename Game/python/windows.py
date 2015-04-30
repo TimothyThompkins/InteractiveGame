@@ -18,13 +18,6 @@ class startWindow(Frame):
         Frame.__init__(self, master, *pargs)
 
         def _start_new_game():
-            game_init = True
-            new_game = True
-            system.set_game_init(game_init)
-            system.set_new_game(new_game)
-            user_input_choice = self.input_selection.get()
-            system.set_input_method(user_input_choice)
-
             try:
                 user_serial_selection = system.get_serial_port()
                 user_baud_selection = system.get_baud_rate()
@@ -37,26 +30,26 @@ class startWindow(Frame):
             except(serialPortDefError, baudRateDefError) as e:
 
                 if (user_serial_selection == None) and (user_baud_selection == None):
-                    serial_baud_error = error_window(w, h, x, y, serial_error_msg, baud_error_msg)
+                    serial_baud_error = error_window(system, w, h, x, y, serial_error_msg, baud_error_msg)
 
                 elif (user_serial_selection == None):
-                    serial_baud_error = error_window(w, h, x, y, serial_error_msg)
+                    serial_baud_error = error_window(system, w, h, x, y, serial_error_msg)
 
                 elif (user_baud_selection == None):
-                    serial_baud_error = error_window(w, h, x, y, baud_error_msg)
+                    serial_baud_error = error_window(system, w, h, x, y, baud_error_msg)
 
             else:
+                game_init = True
+                new_game = True
+                system.set_game_init(game_init)
+                system.set_new_game(new_game)
+                user_input_choice = self.input_selection.get()
+                system.set_input_method(user_input_choice)
+
                 self.master.destroy()
 
         # TMT get load game to work
         def _load_old_game():
-            game_init = True
-            new_game = False
-            system.set_game_init(game_init)
-            system.set_new_game(new_game)
-            user_input_choice = self.input_selection.get()
-            system.set_input_method(user_input_choice)
-
             try:
                 user_serial_selection = system.get_serial_port()
                 user_baud_selection = system.get_baud_rate()
@@ -69,18 +62,25 @@ class startWindow(Frame):
             except(serialPortDefError, baudRateDefError) as e:
 
                 if (user_serial_selection == None) and (user_baud_selection == None):
-                    serial_baud_error = error_window(w, h, x, y, serial_error_msg, baud_error_msg)
+                    serial_baud_error = error_window(system, w, h, x, y, serial_error_msg, baud_error_msg)
 
                 elif (user_serial_selection == None):
-                    serial_baud_error = error_window(w, h, x, y, serial_error_msg)
+                    serial_baud_error = error_window(system, w, h, x, y, serial_error_msg)
 
                 elif (user_baud_selection == None):
-                    serial_baud_error = error_window(w, h, x, y, baud_error_msg)
+                    serial_baud_error = error_window(system, w, h, x, y, baud_error_msg)
 
             else:
+                game_init = True
+                new_game = False
+                system.set_game_init(game_init)
+                system.set_new_game(new_game)
+                user_input_choice = self.input_selection.get()
+                system.set_input_method(user_input_choice)
+
                 self.master.destroy()
 
-        serial_ports = get_port_options()
+        serial_ports = get_port_options(system)
         baud_rates = get_baud_options()
 
         map_serial_ports = {}
@@ -169,7 +169,7 @@ class startWindow(Frame):
         self.input_selection.set(input_options[0]) # initial value
         #selected_input = ttk.Combobox(self, textvariable=self.input_selection, background='#464646', state='readonly', values=input_options)
         selected_input = OptionMenu(self, self.input_selection, *input_options)
-        selected_input.config(width=15, background='#464646', highlightbackground='#464646')
+        selected_input.config(width=15, highlightbackground='#464646') #background='#464646', TMT test on OSX
         selected_input.pack(expand=NO, side=BOTTOM, pady=17, padx=0)
 
 
@@ -185,13 +185,12 @@ class startWindow(Frame):
 class error_window(Frame):
 
     # Can print up to 3 errors TMT add exception for this
-    def __init__(self, w, h, x, y, *args):
+    def __init__(self, system, w, h, x, y, *args):
 
         def _release_window():
             error_window.grab_release()
             error_window.destroy()
 
-        #error_window = Tk() # Create new error_window to work with Tkinter
         error_window = Toplevel()
 
         error_window.grab_set()
@@ -220,7 +219,12 @@ class error_window(Frame):
         blank_space.pack(side=TOP)
 
         for msg, error_msg in enumerate(args):
-            current_msg = Label(error_window, text=str(msg+1) + ". " + error_msg, font=('Helvetica', 12), background='#E9E9E9', highlightbackground='#E9E9E9', foreground='black', justify='left')
+            if system.get_sys_platform() == 'OSX':
+                current_msg = Label(error_window, text=str(msg+1) + ". " + error_msg, font=('Helvetica', 12), background='#E9E9E9', highlightbackground='#E9E9E9', foreground='black', justify='left')
+
+            elif system.get_sys_platform() == 'linux':
+                current_msg = Label(error_window, text=str(msg+1) + ". " + error_msg, font=('Helvetica', 9), background='#E9E9E9', highlightbackground='#E9E9E9', foreground='black', justify='left')
+
             current_msg.pack(side=TOP)
 
         error_window.mainloop()

@@ -37,7 +37,7 @@ class serial_comms:
     #def test_comms(self):
 
 
-def get_port_options():
+def get_port_options(system):
     """Lists serial ports
 
     :raises EnvironmentError:
@@ -45,19 +45,20 @@ def get_port_options():
     :returns:
         A list of available serial ports
     """
+    sys_platform = system.get_sys_platform()
+
     # For Windows Platform
-    if sys.platform.startswith('win'):
+    if sys_platform == 'windows':
         ports = ['COM' + str(i + 1) for i in range(256)]
 
     # For Linux Platforms
-    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+    elif sys_platform == 'linux':
         # this is to exclude your current terminal "/dev/tty"
         ports = glob.glob('/dev/tty[A-Za-z]*')
 
     # For OSX Platforms
-    elif sys.platform.startswith('darwin'):
+    elif sys_platform == 'OSX':
         ports = glob.glob('/dev/tty.*')
-
 
     else:
         raise EnvironmentError('Unsupported platform')

@@ -1,4 +1,5 @@
 import platform
+import sys
 
 class sys_config(object):
 
@@ -10,6 +11,21 @@ class sys_config(object):
         self.input_method = None
         self.serial_port = None
         self.baud_rate = None
+
+        if sys.platform.startswith('win'):
+            self.sys_platform = 'windows'
+
+        # For Linux Platforms
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+            self.sys_platform = 'linux'
+
+        # For OSX Platforms
+        elif sys.platform.startswith('darwin'):
+            self.sys_platform = 'OSX'
+
+        else:
+            self.sys_platform = None
+            raise EnvironmentError('Unsupported platform')
 
         architecture = (platform.processor())
 
@@ -36,6 +52,9 @@ class sys_config(object):
             self.input_options = ['Arrow Keys','Web Cam']
 
     # Get Data
+    def get_sys_platform(self):
+        return self.sys_platform
+
     def get_start_window_dim(self):
         return (self.start_window_width, self.start_window_height)
 
