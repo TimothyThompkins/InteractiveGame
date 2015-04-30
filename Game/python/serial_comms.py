@@ -8,11 +8,34 @@ error_msg = "Error: No Serial ports available"
 
 class serial_comms:
 
-    def __init__(self):
-        #self.baudrate = [110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200]
-        self.stopbits = serial.STOPBITS_TWO
+    def __init__(self, serial_port, baud_rate):
+
+        #ser = serial.Serial(
+        self.port = serial_port,
+        self.baudrate = baud_rate,
+        self.stopbits = serial.STOPBITS_TWO,
         self.bytesize = serial.EIGHTBITS
-        #self.serial_test = _serial_ports()
+        #)
+
+    # TMT This needs work, these are just placeholders
+    def send_data(self):
+        self.ser.isOpen()
+        delim = "\x00"
+        ser.write(msg+delim)
+
+    def recv_data(self):
+        self.ser.isOpen()
+        delim = "\x00"
+        recvd = "".join(iter(lambda:ser.read(1),delim))
+        return recvd
+
+    def _a2s(arr):
+        """ Array of integer byte values --> binary string
+        """
+        return ''.join(chr(b) for b in arr)
+
+    #def test_comms(self):
+
 
 def get_port_options():
     """Lists serial ports
@@ -55,43 +78,3 @@ def get_port_options():
 
 def get_baud_options():
     return baudrates
-
-
-#ser = serial.Serial('/dev/tty.usbmodem1431')  # open first serial port
-# ser = serial.Serial(
-#     port='/dev/tty.usbmodem1431',
-#     baudrate=9600,
-#     #parity=serial.PARITY_ODD,
-#     stopbits=serial.STOPBITS_TWO,
-#     bytesize=serial.EIGHTBITS
-# )
-
-#ser.open()
-# ser.isOpen()
-#
-# print ('Enter your commands below.\r\nInsert "exit" to leave the application.')
-#
-# #input=1
-# while 1 :
-#     # get keyboard input
-#     #input = raw_input(">> ")
-#     # Python 3 users
-#     data = input()
-#     #sread(size=1)
-#
-#     if data == 'exit':
-#         ser.close()
-#         exit()
-#     else:
-#         # send the character to the device
-#         # (note that I happend a \r\n carriage return and line feed to the characters - this is requested by my device)
-#         #ser.write(input + '\r\n')
-#         ser.write(bytes(data, 'UTF-8'))
-#         out = ''
-#         # let's wait one second before reading output (let's give device time to answer)
-#         time.sleep(1)
-#         while ser.inWaiting() > 0:
-#             out += ser.read(1)
-#
-#         if out != '':
-#             print (">>" + out)

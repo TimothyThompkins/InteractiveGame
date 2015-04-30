@@ -1,182 +1,204 @@
 from tkinter import *
+from random import*
 
-class MyApp:
-  def __init__(self, parent):
-    button_width = 6
-    button_padx = "2m"
-    button_pady = "1m"
-    buttons_frame_padx =  "3m"
-    buttons_frame_pady =  "2m"
-    buttons_frame_ipadx = "3m"
-    buttons_frame_ipady = "1m"
-
-    self.button_name   = StringVar()
-    self.button_name.set("C")
-
-    self.side_option = StringVar()
-    self.side_option.set(LEFT)
-
-    self.fill_option   = StringVar()
-    self.fill_option.set(NONE)
-
-    self.expand_option = StringVar()
-    self.expand_option.set(YES)
-
-    self.anchor_option = StringVar()
-    self.anchor_option.set(CENTER)
+'''New game to illustrate the use of tkinter to make a game that can handle collisions.
+'''
 
 
-    self.myParent = parent
-    self.myParent.geometry("640x400")
+class game:
+    def __init__(self):
+        self.root=Tk()
+        self.RUN=False
 
-    self.myContainer1 = Frame(parent)
-    self.myContainer1.pack(expand=YES, fill=BOTH)
+        self.frame=Frame(bg="black")
+        self.frame.pack();
+
+        self.canvas=Canvas(self.frame, bg="black",width=300,height=300)
+        self.canvas.pack()
+
+        self.clock=Label(self.frame, bg="black", fg="white")
+        self.clock.pack()
+        self.points=Label(self.frame, bg="black", fg="white")
+        self.points.pack()
+        self.button=Button(self.frame, bg="black", fg="white", text="Click to start" ,command=self.start)
+        self.button.pack()
+
+        self.root.mainloop()
+
+    def start(self):
+        self.time=0
+        self.RUN=True
+
+        self.foodX=[]
+        self.foodY=[]
+
+        self.trapX=[]
+        self.trapY=[]
+
+        self.powerupX=[[],[]]
+        self.powerupY=[[],[]]
+
+        self.TEXT="Welcome to tkinter"
+        self.point=0
+
+        self.x=100
+        self.y=100
+        self.tempx=100
+        self.tempy=100
+        self.UP=False
+        self.DOWN=False
+        self.LEFT=False
+        self.RIGHT=False
+
+        self.size=3
+        self.canvas.bind("<ButtonPress-1>", self.onMClick)
+        self.run()
+
+    def run(self):
+        if self.RUN is True:
+            self.time+=1
+            self.clock['text']="TIME:" + str(self.time//100)
+            self.points['text']="Points gathered: " + str(self.point)
+            self.move(10*self.size,2)
+            self.paint()
+            self.root.after(10, self.run)
+
+    def end(self):
+        self.RUN=False
+        self.canvas.unbind("<ButtonPress-1>")
+
+    def create_food(self,ball):
+        if len(self.foodX) <self.time//1500 +1:
+            self.foodX.append(randint(50,250))
+        if len(self.foodY) <self.time//1500 +1:
+            self.foodY.append(randint(50,250))
+        for i in range(0,len(self.foodX)):
+            self.canvas.create_rectangle(self.foodX[i], self.foodY[i], self.foodX[i]+10, self.foodY[i]+10, fill="blue")
+        for i in range(0,len(self.foodX)):
+            if len(self.canvas.find_overlapping(self.foodX[i], self.foodY[i], self.foodX[i]+10, self.foodY[i]+10)) is not 1:
+                if ball in self.canvas.find_overlapping(self.foodX[i], self.foodY[i], self.foodX[i]+10, self.foodY[i]+10):
+                    self.point+=100
+                    self.size+=0.5
+                    self.foodX.pop(i)
+                    self.foodY.pop(i)
+                    self.create_food(ball)
+
+    def create_trap(self,ball):
+        if len(self.trapX) <self.time//1500 +1:
+            self.trapX.append(randint(50,250))
+        if len(self.trapY) <self.time//1500 +1:
+            self.trapY.append(randint(50,250))
+        for i in range(0,len(self.trapX)):
+            self.canvas.create_rectangle(self.trapX[i], self.trapY[i], self.trapX[i]+10, self.trapY[i]+10, fill="red")
+        for i in range(0,len(self.trapX)):
+            if len(self.canvas.find_overlapping(self.trapX[i], self.trapY[i], self.trapX[i]+10, self.trapY[i]+10)) is not 1:
+                if ball in self.canvas.find_overlapping(self.trapX[i], self.trapY[i], self.trapX[i]+10, self.trapY[i]+10):
+                    self.point-=50
+                    self.size-=1
+                    self.trapX.pop(i)
+                    self.trapY.pop(i)
+                    self.create_trap(ball)
+
+    def create_powersize(self,ball):
+        if len(self.trapY) is 0 or self.time%1000 == 0 :
+            self.powerupX[0].append(randint(50,250))
+            self.powerupY[0].append(randint(50,250))
+        for i in range(0,len(self.powerupX[0])):
+            self.canvas.create_rectangle(self.powerupX[0][i], self.powerupY[0][i], self.powerupX[0][i]+10, self.powerupY[0][i]+10, fill="yellow")
+        for i in range(0,len(self.powerupX[0])):
+            if len(self.canvas.find_overlapping(self.powerupX[0][i], self.powerupY[0][i], self.powerupX[0][i]+10, self.powerupY[0][i]+10)) is not 1:
+                if ball in self.canvas.find_overlapping(self.powerupX[0][i], self.powerupY[0][i], self.powerupX[0][i]+10, self.powerupY[0][i]+10):
+                    self.point+=150
+                    self.size+=2
+                    self.powerupX[0].pop(i)
+                    self.powerupY[0].pop(i)
+                    self.create_powersize(ball)
+
+    def create_powercoin(self,ball):
+        if len(self.trapY) is 0 or self.time%1000 == 0 :
+            self.powerupX[1].append(randint(50,250))
+            self.powerupY[1].append(randint(50,250))
+        for i in range(0,len(self.powerupX[1])):
+            self.canvas.create_rectangle(self.powerupX[1][i], self.powerupY[1][i], self.powerupX[1][i]+10, self.powerupY[1][i]+10, fill="yellow")
+        for i in range(0,len(self.powerupX[1])):
+            if len(self.canvas.find_overlapping(self.powerupX[1][i], self.powerupY[1][i], self.powerupX[1][i]+10, self.powerupY[1][i]+10)) is not 1:
+                if ball in self.canvas.find_overlapping(self.powerupX[1][i], self.powerupY[1][i], self.powerupX[1][i]+10, self.powerupY[1][i]+10):
+                    self.point+=500
+                    self.size-=0.5
+                    self.powerupX[1].pop(i)
+                    self.powerupY[1].pop(i)
+                    self.create_powercoin(ball)
+
+    def paint(self):
+        self.canvas.delete(ALL)
+        self.canvas.create_text(100,100, text=self.TEXT, fill="green")
+
+        if self.time//100<=60:
+            if 10*self.size >0:
+                self.TEXT="Welcome to tkinter"
+                ball=self.canvas.create_oval(self.x-10*self.size,self.y-10*self.size,self.x+10*self.size,self.y+10*self.size, fill="white")
+                self.create_food(ball)
+                self.create_trap(ball)
+                if self.time%1000 <=100 :
+                    if randint(0,100)%2==0:
+                        self.create_powersize(ball)
+                    else:
+                        self.create_powercoin(ball)
+            elif 10*self.size>150:
+                self.clock['text']="You lost"
+                self.end()
+            else:
+                self.clock['text']="You lost"
+                self.end()
+        else:
+            self.clock['text']="Time's up"
+            self.end()
+
+    def move(self, b,speed):
+        if self.UP==True and self.y-b>0:
+            self.y-=speed
+        elif self.UP==True and self.y-b<=0:
+            self.UP=False
+            self.DOWN=True
+        if self.DOWN==True and self.y+b<300:
+            self.y+=speed
+        elif self.DOWN==True and self.y+b>=300:
+            self.DOWN=False
+            self.UP=True
+        if self.LEFT==True and self.x-b>0:
+            self.x-=speed
+        elif self.LEFT==True and self.x-b<=0:
+            self.LEFT=False
+            self.RIGHT=True
+        if self.RIGHT==True and self.x+b<300:
+            self.x+=speed
+        elif self.RIGHT==True and self.x+b>=300:
+            self.RIGHT=False
+            self.LEFT=True
+
+    def onMClick(self,event):
+        self.tempx=event.x
+        self.tempy=event.y
+        if event.x> self.x and self.x is not self.tempx :
+            self.RIGHT=True
+            self.LEFT=False
+        elif event.x< self.x and self.x is not self.tempx :
+            self.LEFT=True
+            self.RIGHT=False
+        else:
+            self.x=self.tempx
+            self.RIGHT=False
+            self.LEFT=False
+        if event.y> self.y and self.y is not self.tempy :
+            self.DOWN=True
+            self.UP=False
+        elif event.y< self.y and self.y is not self.tempy :
+            self.UP=True
+            self.DOWN=False
+        else:
+            self.y=self.tempy
+            self.DOWN=False
+            self.UP=False
 
 
-    self.control_frame = Frame(self.myContainer1)
-    self.control_frame.pack(side=LEFT, expand=NO,  padx=10, pady=5, ipadx=5, ipady=5)
-
-    myMessage="Demo"
-    Label(self.control_frame, text=myMessage, justify=LEFT).pack(side=TOP, anchor=W)
-
-    self.buttons_frame = Frame(self.control_frame)
-    self.buttons_frame.pack(side=TOP, expand=NO, fill=Y, ipadx=5, ipady=5)
-
-    self.demo_frame = Frame(self.myContainer1)
-    self.demo_frame.pack(side=RIGHT, expand=YES, fill=BOTH)
-
-
-    self.top_frame = Frame(self.demo_frame)
-    self.top_frame.pack(side=TOP, expand=YES, fill=BOTH)
-
-    self.bottom_frame = Frame(self.demo_frame,
-      borderwidth=5,   relief=RIDGE,
-      height=50,
-      bg="cyan",
-      )
-    self.bottom_frame.pack(side=TOP, fill=X)
-
-
-    self.left_frame = Frame(self.top_frame,
-                            background="red",
-                          borderwidth=5,
-                          relief=RIDGE,
-                          width=50,
-                          )
-    self.left_frame.pack(side=LEFT, expand=NO, fill=Y)
-
-    self.right_frame = Frame(self.top_frame,
-                             background="tan",
-                           borderwidth=5,
-                           relief=RIDGE,
-                           width=250
-                          )
-    self.right_frame.pack(side=RIGHT, expand=YES, fill=BOTH)
-
-
-    button_names = ["A", "B", "C"]
-    side_options = [LEFT, TOP, RIGHT, BOTTOM]
-    fill_options = [X, Y, BOTH, NONE]
-    expand_options = [YES, NO]
-    anchor_options = [NW, N, NE, E, SE, S, SW, W, CENTER]
-
-
-    self.buttonA = Button(self.bottom_frame, text="A")
-    self.buttonA.pack()
-    self.buttonB = Button(self.left_frame, text="B")
-    self.buttonB.pack()
-    self.buttonC = Button(self.right_frame, text="C")
-    self.buttonC.pack()
-    self.button_with_name = {"A":self.buttonA, "B":self.buttonB, "C":self.buttonC}
-
-    self.button_names_frame   = Frame(self.buttons_frame, borderwidth=5)
-    self.side_options_frame   = Frame(self.buttons_frame, borderwidth=5)
-    self.fill_options_frame   = Frame(self.buttons_frame, borderwidth=5)
-    self.expand_options_frame = Frame(self.buttons_frame, borderwidth=5)
-    self.anchor_options_frame = Frame(self.buttons_frame, borderwidth=5)
-
-    self.button_names_frame.pack(  side=LEFT, expand=YES, fill=Y, anchor=N)
-    self.side_options_frame.pack(  side=LEFT, expand=YES, anchor=N)
-    self.fill_options_frame.pack(  side=LEFT, expand=YES, anchor=N)
-    self.expand_options_frame.pack(side=LEFT, expand=YES, anchor=N)
-    self.anchor_options_frame.pack(side=LEFT, expand=YES, anchor=N)
-
-    Label(self.button_names_frame, text="\nButton").pack()
-    Label(self.side_options_frame, text="Side\nOption").pack()
-    Label(self.fill_options_frame, text="Fill\nOption").pack()
-    Label(self.expand_options_frame, text="Expand\nOption").pack()
-    Label(self.anchor_options_frame, text="Anchor\nOption").pack()
-
-    for option in button_names:
-      button = Radiobutton(self.button_names_frame, text=str(option), indicatoron=1,
-        value=option, command=self.button_refresh, variable=self.button_name)
-      button["width"] = button_width
-      button.pack(side=TOP)
-
-    for option in side_options:
-      button = Radiobutton(self.side_options_frame, text=str(option), indicatoron=0,
-        value=option, command=self.demo_update, variable=self.side_option)
-      button["width"] = button_width
-      button.pack(side=TOP)
-
-    for option in fill_options:
-      button = Radiobutton(self.fill_options_frame, text=str(option), indicatoron=0,
-        value=option, command=self.demo_update, variable=self.fill_option)
-      button["width"] = button_width
-      button.pack(side=TOP)
-
-    for option in expand_options:
-      button = Radiobutton(self.expand_options_frame, text=str(option), indicatoron=0,
-        value=option, command=self.demo_update, variable=self.expand_option)
-      button["width"] = button_width
-      button.pack(side=TOP)
-
-    for option in anchor_options:
-      button = Radiobutton(self.anchor_options_frame, text=str(option), indicatoron=0,
-        value=option, command=self.demo_update, variable=self.anchor_option)
-      button["width"] = button_width
-      button.pack(side=TOP)
-
-    self.cancelButtonFrame = Frame(self.button_names_frame)
-    self.cancelButtonFrame.pack(side=BOTTOM, expand=YES, anchor=SW)
-
-    self.cancelButton = Button(self.cancelButtonFrame,
-      text="Cancel", background="red",
-      width=button_width,
-      padx=button_padx,
-      pady=button_pady
-      )
-    self.cancelButton.pack(side=BOTTOM, anchor=S)
-    self.cancelButton.bind("<Button-1>", self.cancelButtonClick)
-    self.cancelButton.bind("<Return>", self.cancelButtonClick)
-
-    self.demo_update()
-
-
-  def button_refresh(self):
-    button = self.button_with_name[self.button_name.get()]
-    properties = button.pack_info()
-    self.fill_option.set  (  properties["fill"] )
-    self.side_option.set  (  properties["side"] )
-    self.expand_option.set(  properties["expand"] )
-    self.anchor_option.set(  properties["anchor"] )
-
-
-  def demo_update(self):
-    button = self.button_with_name[self.button_name.get()]
-    button.pack(fill=self.fill_option.get()
-      , side=self.side_option.get()
-      , expand=self.expand_option.get()
-      , anchor=self.anchor_option.get()
-      )
-
-  def cancelButtonClick(self, event):
-    try:
-        self.myParent.destroy()
-        
-    except:
-        print ("couldn't close")
-
-root = Tk()
-myapp = MyApp(root)
-root.mainloop()
+app=game()        

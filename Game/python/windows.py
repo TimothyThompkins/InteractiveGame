@@ -17,9 +17,10 @@ class startWindow(Frame):
     def __init__(self, master, system, w, h, x, y, *pargs):
         Frame.__init__(self, master, *pargs)
 
-        # TMT add below code to load game too
         def _start_new_game():
+            game_init = True
             new_game = True
+            system.set_game_init(game_init)
             system.set_new_game(new_game)
             user_input_choice = self.input_selection.get()
             system.set_input_method(user_input_choice)
@@ -45,22 +46,45 @@ class startWindow(Frame):
                     serial_baud_error = error_window(w, h, x, y, baud_error_msg)
 
             else:
-                #TMT add error handling here in case user doesn't select baud rate and serial port
                 self.master.destroy()
 
+        # TMT get load game to work
         def _load_old_game():
+            game_init = True
             new_game = False
+            system.set_game_init(game_init)
             system.set_new_game(new_game)
             user_input_choice = self.input_selection.get()
             system.set_input_method(user_input_choice)
-            self.master.destroy()
+
+            try:
+                user_serial_selection = system.get_serial_port()
+                user_baud_selection = system.get_baud_rate()
+
+                if user_serial_selection == None:
+                    raise serialPortDefError
+                if user_baud_selection == None:
+                    raise  baudRateDefError
+
+            except(serialPortDefError, baudRateDefError) as e:
+
+                if (user_serial_selection == None) and (user_baud_selection == None):
+                    serial_baud_error = error_window(w, h, x, y, serial_error_msg, baud_error_msg)
+
+                elif (user_serial_selection == None):
+                    serial_baud_error = error_window(w, h, x, y, serial_error_msg)
+
+                elif (user_baud_selection == None):
+                    serial_baud_error = error_window(w, h, x, y, baud_error_msg)
+
+            else:
+                self.master.destroy()
 
         serial_ports = get_port_options()
         baud_rates = get_baud_options()
 
         map_serial_ports = {}
         map_baud_rates = {}
-
 
         # Creates a new function for each entry in the tool bar menu options. Each function has the same name & is stored in map_X[]
         for i, name in enumerate(serial_ports):
@@ -161,7 +185,6 @@ class startWindow(Frame):
 class error_window(Frame):
 
     # Can print up to 3 errors TMT add exception for this
-    # TMT add custom menu bar to error window
     def __init__(self, w, h, x, y, *args):
 
         def _release_window():
@@ -191,7 +214,7 @@ class error_window(Frame):
         #resize = image.resize((64, 64), Image.ANTIALIAS)
         error_image = ImageTk.PhotoImage(image) # Keep a reference, prevent GC
         error_image_label = Label(error_window, image=error_image, background='#E9E9E9', highlightbackground='#E9E9E9')
-        error_image_label.pack(side=LEFT, padx=6)
+        error_image_label.pack(side=LEFT, padx=8)
 
         blank_space = Label(error_window, background='#E9E9E9', highlightbackground='#E9E9E9')
         blank_space.pack(side=TOP)
@@ -202,12 +225,37 @@ class error_window(Frame):
 
         error_window.mainloop()
 
-#class game_parameters():
-        #new_game, user_input_choice, user_port_selection, user_baud_selection
-        #TMT make class to hold game parameters maybe?
+class gameWindow(Frame):
+
+    def __init__(self, master, system, *pargs):
+        Frame.__init__(self, master, *pargs)
+
+        # Sets games background image
+        self.image = Image.open("Game_Background.gif") # Pillow is needed to import a background image
+        self.img_copy= self.image.copy()
+        self.background_image = ImageTk.PhotoImage(self.image)
+        self.background = Label(self, image=self.background_image)
+        self.background.place(x=0,y=0,relwidth=1, relheight=1)
+        self.background.bind('<Configure>', self._resize_game_window_image) # Automatically resizes the background
+
+        # TMT Add menubar for save current game state
+
+        #def run:
+        # rcv = serial.recv_data
+        # refresh canvas with drawings
+        # Get current user input, also add for pause
+        # serial.send_data(data)
+        # tkinter after method(run)
+
+    def _resize_game_window_image(self,event):
+        new_width = event.width
+        new_height = event.height
+
+        self.image = self.img_copy.resize((new_width, new_height))
+
+        self.background_image = ImageTk.PhotoImage(self.image)
+        self.background.configure(image =  self.background_image)
 
 #class calibrateCameraInput():
-
-#class gameWindow(Frame):
 
 #class spashScreen(Frame):

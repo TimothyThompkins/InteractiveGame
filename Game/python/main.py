@@ -1,9 +1,9 @@
 from tkinter import *
-from windows import startWindow
+from windows import startWindow, gameWindow
 from config import sys_config
 
 # Create the main screen
-def _start(system):
+def _start_screen(system):
 
     root = Tk() # Create new root to work with Tkinter
     root.title('Alien Invaders')
@@ -22,21 +22,21 @@ def _start(system):
     root.geometry('%dx%d+%d+%d' % (w, h, x, y))
     root.resizable(0,0)
 
-    initial_window = startWindow(root, system, w, h, x, y)
-    initial_window.pack(fill=BOTH, expand=YES)
+    start_window = startWindow(root, system, w, h, x, y)
+    start_window.pack(fill=BOTH, expand=YES)
 
     #root.lift()
     #root.call('wm', 'attributes', '.', '-topmost', True) # Bring window to front, should work
+    root.focus()
 
     root.mainloop()
 
-def _game_window(system):
+def _play_game(system):
 
     root = Tk() # Create new root to work with Tkinter
     root.title('Alien Invaders')
 
-    w = 1024
-    h = 640
+    w, h = system.get_game_window_dim()
 
     # get screen width and height
     ws = root.winfo_screenwidth() #This value is the width of the screen
@@ -48,24 +48,29 @@ def _game_window(system):
 
     #This is responsible for setting the dimensions of the screen and where it is placed
     root.geometry('%dx%d+%d+%d' % (w, h, x, y))
-    root.resizable(0,0)
 
-    initial_window = startWindow(root, system)
-    initial_window.pack(fill=BOTH, expand=YES)
+    game_window = gameWindow(root, system)
+    game_window.pack(fill=BOTH, expand=YES)
 
     #root.lift()
     #root.call('wm', 'attributes', '.', '-topmost', True) # Bring window to front, should work
     root.focus()
-    
+
     root.mainloop()
 
 
 def main():
 
     system = sys_config() # Create a new system on which to run
-    _start(system)
-    system.print_data()
-    print ('Execution Ended')
+    _start_screen(system)
+
+    # This just checks if we actually clicked start / load game. Otherwise the user closed the window
+    if system.get_game_init() is True:
+        # TMT Create new serial object, test serial connectivity, pass to _play_game
+        _play_game(system)
+
+        system.print_data()
+        print ('Execution Ended')
 
 
 if __name__ == '__main__':
