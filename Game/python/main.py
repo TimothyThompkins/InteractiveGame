@@ -1,6 +1,9 @@
 from tkinter import *
 from windows import startWindow, gameWindow
 from config import sys_config
+from serial_comms import serial_comms
+
+import struct
 
 # Create the main screen
 def _start_screen(system):
@@ -61,13 +64,20 @@ def _play_game(system):
 
 def main():
 
+    init_game_sequence = 1; # This is the flag to the controller to init its game sequence #TMT
+
     system = sys_config() # Create a new system on which to run
     _start_screen(system)
 
     # This just checks if we actually clicked start / load game. Otherwise the user closed the window
     if system.get_game_init() is True:
         # TMT Create new serial object, test serial connectivity, pass to _play_game
-        _play_game(system)
+        #_play_game(system)
+
+        # TMT Left off here. Need to
+        # 1.) Make init_game_sequence uint8_t with struct in python
+        # 2.) Figure out how to sent an array to the uC with the init sequence data
+        serial_port = serial_comms(system.get_serial_port(), system.get_baud_rate())
 
         system.print_data()
         print ('Execution Ended')

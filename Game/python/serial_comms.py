@@ -6,16 +6,27 @@ import serial
 baudrates = [110, 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200]
 error_msg = "Error: No Serial ports available"
 
-class serial_comms:
+class serial_comms():
 
     def __init__(self, serial_port, baud_rate):
 
-        #ser = serial.Serial(
-        self.port = serial_port,
-        self.baudrate = baud_rate,
-        self.stopbits = serial.STOPBITS_TWO,
+        self.port = serial_port
+        self.baudrate = baud_rate
+        self.stopbits = serial.STOPBITS_TWO
         self.bytesize = serial.EIGHTBITS
-        #)
+
+        self._open_serial_port()
+
+    def _open_serial_port(self):
+
+        ser = serial.Serial(
+            port = self.port,
+            baudrate = self.baudrate,
+            stopbits = serial.STOPBITS_TWO,
+            bytesize = serial.EIGHTBITS,
+        )
+
+        ser.isOpen()
 
     # TMT This needs work, these are just placeholders
     def send_data(self):
@@ -35,6 +46,8 @@ class serial_comms:
         return ''.join(chr(b) for b in arr)
 
     #def test_comms(self):
+
+
 
 
 def get_port_options(system):
