@@ -49,7 +49,7 @@ class sys_config(object):
             self.game_window_width = 1024
             self.game_window_height = 640
 
-            self.input_options = ['Arrow Keys','Web Cam']
+            self.input_options = ['Arrow Keys','Web Cam','Tilt Sensor']
 
     # Get Data
     def get_sys_platform(self):
