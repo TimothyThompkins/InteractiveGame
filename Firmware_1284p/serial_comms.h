@@ -13,4 +13,6 @@ void USART_Init_Interrupt  (unsigned int);
 void USART_Init	   				 (unsigned int);
 void USART_SendByte     	 (unsigned int);
 
+uint8_t *getSetup          (void);
+
 #endif

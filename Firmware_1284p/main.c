@@ -15,7 +15,7 @@
 
 #include "serial_comms.h"
 
-extern volatile uint8_t receivedByte;
+//extern volatile uint8_t receivedByte;
 
 void pinConfig() {
 
@@ -28,36 +28,53 @@ void pinConfig() {
 int main(void)
 {
 
-		uint8_t data1 = 'm';
-		uint8_t data2 = 'n';
+		uint8_t test_comms = 'z';
+		uint8_t setupState = 1;
+		uint8_t *setupData; // Pointer to hold setup data
+
 		USART_Init_Interrupt(BAUD_PRESCALE);  // Initialise USART
-		pinConfig(); //Initialize Pin Configuration
+		pinConfig(); // Initialize Pin Configuration
 
 		while(1)
 		{
-				if (PINC & (1<<PC0)) {
-					PORTB |= (1<<PB3);
-					USART_SendByte(data1);
-				}
 
-				else {
-					PORTB &= ~(1<<PB3);
-				}
 
-				if (PINC & (1<<PC7)) {
-					PORTB |= (1<<PB3);
-					USART_SendByte(data2);
+			while(setupState) // Wait in this while loop while waiting for user conig
+			{
+				setupData = getSetup();
+				if ((*setupData + 0) == 1) // 3rd Element of pointer is init flag. If true break while loop and start.
+				{
+					setupState = 0;
 				}
-				else {
-					PORTB &= ~(1<<PB3);
-				}
+			}
 
-				if (receivedByte == 'k') {
-					PORTB |= (1<<PB3);
-				}
-				else {
-					PORTB &= ~(1<<PB3);
-				}
+			PORTB |= (1<<PB3);
+			_delay_ms(1000);
+			PORTB &= ~(1<<PB3);
+
+			// if (PINC & (1<<PC0)) {
+			// 	PORTB |= (1<<PB3);
+			// 	USART_SendByte(data1);
+			// }
+			//
+			// else {
+			// 	PORTB &= ~(1<<PB3);
+			// }
+			//
+			// if (PINC & (1<<PC7)) {
+			// 	PORTB |= (1<<PB3);
+			// 	USART_SendByte(data2);
+			// }
+			// else {
+			// 	PORTB &= ~(1<<PB3);
+			// }
+			//
+			// if (receivedByte == 'k') {
+			// 	PORTB |= (1<<PB3);
+			// }
+			// else {
+			// 	PORTB &= ~(1<<PB3);
+			// }
 
 		}
 }
