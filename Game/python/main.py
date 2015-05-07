@@ -64,7 +64,7 @@ def _play_game(system):
 
 def main():
 
-    init_game_sequence = 1; # This is the flag to the controller to init its game sequence #TMT
+    init_game_sequence = bytes([1]); # This is the flag to the controller to init its game sequence #TMT
 
     system = sys_config() # Create a new system on which to run
     _start_screen(system)
@@ -75,9 +75,9 @@ def main():
         #_play_game(system)
 
         # TMT Left off here. Need to
-        # 1.) Make init_game_sequence uint8_t with struct in python
         # 2.) Figure out how to sent an array to the uC with the init sequence data
         serial_port = serial_comms(system.get_serial_port(), system.get_baud_rate())
+        serial_port.send_data(init_game_sequence)
 
         system.print_data()
         print ('Execution Ended')

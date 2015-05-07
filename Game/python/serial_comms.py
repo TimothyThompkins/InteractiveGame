@@ -17,22 +17,23 @@ class serial_comms():
 
         self._open_serial_port()
 
+    # Open the serial port with these parameters
     def _open_serial_port(self):
 
-        ser = serial.Serial(
+        self.ser = serial.Serial(
             port = self.port,
             baudrate = self.baudrate,
             stopbits = serial.STOPBITS_TWO,
             bytesize = serial.EIGHTBITS,
         )
 
-        ser.isOpen()
+        self.ser.isOpen()
 
     # TMT This needs work, these are just placeholders
-    def send_data(self):
-        self.ser.isOpen()
-        delim = "\x00"
-        ser.write(msg+delim)
+    def send_data(self, data):
+        # delim = bytes([])
+        # ser.write(data+delim)
+        self.ser.write(data)
 
     def recv_data(self):
         self.ser.isOpen()
