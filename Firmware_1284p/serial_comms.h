@@ -9,8 +9,7 @@
 #define _serial_comms_h
 
 /* Function prototypes */
-void USART_Init_Interrupt  (unsigned int);
-void USART_Init	   				 (unsigned int);
+void USART0_Init           (unsigned int);
 void USART_SendByte     	 (unsigned int);
 
 uint8_t *getSetup          (void);

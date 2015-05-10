@@ -32,7 +32,7 @@ int main(void)
 		uint8_t setupState = 1;
 		uint8_t *setupData; // Pointer to hold setup data
 
-		USART_Init_Interrupt(BAUD_PRESCALE);  // Initialise USART
+		USART0_Init(BAUD_PRESCALE);  // Initialise USART
 		pinConfig(); // Initialize Pin Configuration
 
 		while(1)
