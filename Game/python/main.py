@@ -61,7 +61,6 @@ def _play_game(system):
 
     root.mainloop()
 
-
 def main():
 
     init_game_sequence = bytes([1]); # This is the flag to the controller to init its game sequence #TMT

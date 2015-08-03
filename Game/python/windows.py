@@ -17,6 +17,7 @@ class startWindow(Frame):
     def __init__(self, master, system, w, h, x, y, *pargs):
         Frame.__init__(self, master, *pargs)
 
+        # Start a new game
         def _start_new_game():
             try:
                 user_serial_selection = system.get_serial_port()
@@ -41,14 +42,14 @@ class startWindow(Frame):
             else:
                 game_init = True
                 new_game = True
-                system.set_game_init(game_init)
-                system.set_new_game(new_game)
+                system.set_game_init(game_init) # Set set_game_init to True
+                system.set_new_game(new_game) # Set new_game to True
                 user_input_choice = self.input_selection.get()
                 system.set_input_method(user_input_choice)
 
                 self.master.destroy()
 
-        # TMT get load game to work
+        # Load an old game TMT: DOES NOT WORK
         def _load_old_game():
             try:
                 user_serial_selection = system.get_serial_port()
@@ -73,7 +74,7 @@ class startWindow(Frame):
             else:
                 game_init = True
                 new_game = False
-                system.set_game_init(game_init)
+                system.set_game_init(game_init) # Set set_game_init to True
                 system.set_new_game(new_game)
                 user_input_choice = self.input_selection.get()
                 system.set_input_method(user_input_choice)
@@ -146,6 +147,7 @@ class startWindow(Frame):
         master.config(menu=menubar)
 
 
+        # Everything below here creates and formats the initial window
         # Loads the background image
         self.image = Image.open("Space_Invaders_Background_Image.gif") # Pillow is needed to import a background image
         self.img_copy= self.image.copy()
