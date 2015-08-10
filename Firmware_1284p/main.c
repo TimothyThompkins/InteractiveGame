@@ -11,64 +11,110 @@
 
 #include <util/delay.h>
 #include <avr/io.h>
-#include <avr/interrupt.h>
 
 #include "serial_comms.h"
 
-//extern volatile uint8_t receivedByte;
+/*
+ Function Prototypes in Main:
+*/
+ISR(USART_RXC_vect);
+void pinConfig(void);
+int main(void);
 
-void pinConfig() {
+/* Test Varialbes */
+extern volatile uint8_t receivedByte;
+uint8_t running_count = 0;
+uint8_t tst_count = 0;
+uint8_t tst_count_2 = 0;
+uint8_t tst_value = 0;
+uint8_t u8test = 0;
 
+// Declare Buffers
+u8buf_Rx RxBuffer;
+u8buf_Tx TxBuffer;
+
+// RX Complete interrupt service routine //USART_RX_vect on 328P
+// ISR is triggered when RX is complete
+ISR(USART0_RX_vect)
+{
+		uint8_t u8temp;
+		u8temp = UDR0;
+
+		RxBufferWrite(&RxBuffer, u8temp); // Writes data to buffer
+}
+
+void pinConfig(void) {
 	DDRB = 0b00001000;
 	DDRC = 0b00000000;
 	DDRD = 0b11100000;
-
 }
 
 int main(void)
 {
 
-		uint8_t test_comms = 'z';
-		uint8_t setupState = 1;
-		uint8_t *setupData; // Pointer to hold setup data
+		// uint8_t test_comms = 'z';
+		// uint8_t setupState = 1;
+		// uint8_t *setupData; // Pointer to hold setup data
 
-		USART0_Init(BAUD_PRESCALE);  // Initialise USART
+		USART_Init(BAUD_PRESCALE);  // Initialise USART
 		pinConfig(); // Initialize Pin Configuration
 
+		// Main loop
 		while(1)
 		{
 
+			// while(setupState) // Wait in this while loop while waiting for user conig
+			// {
+			// 	setupData = getSetup();
+			// 	if ((*setupData + 0) == 1) // 3rd Element of pointer is init flag. If true break while loop and start.
+			// 	{
+			// 		setupState = 0;
+			// 	}
+			// }
 
-			while(setupState) // Wait in this while loop while waiting for user conig
+			// PORTB |= (1<<PB3);
+			// _delay_ms(1000);
+			// PORTB &= ~(1<<PB3);
+
+			if (PINC & (1<<PC0)) {
+				PORTB |= (1<<PB3);
+
+				// u8temp = running_count == 0? 't' : 'm';
+					if (tst_count < 1)
+					{
+						for(uint8_t i = RxBuffer.index; i > 0; i--)
+						{
+						u8test = RxBuffer.buffer[i-1];
+						TxBufferWrite(&TxBuffer, u8test);
+						tst_count++;
+						}
+					}
+					running_count++;
+			}
+			else
 			{
-				setupData = getSetup();
-				if ((*setupData + 0) == 1) // 3rd Element of pointer is init flag. If true break while loop and start.
-				{
-					setupState = 0;
-				}
+				PORTB &= ~(1<<PB3);
+				tst_count = 0;
 			}
 
-			PORTB |= (1<<PB3);
-			_delay_ms(1000);
-			PORTB &= ~(1<<PB3);
+			if (PINC & (1<<PC7))
+			{
+					if(tst_count_2 < 1){
+					PORTB |= (1<<PB3);
+					// uint8_t test_data = 8;
+					// USART_Test_Transmit(tst_value);
+					USART_Transmit(&TxBuffer);
+					RxBufferReset(&RxBuffer);
+					// USART_Transmit(&RxBuffer);
+					tst_count_2++;
+				}
 
-			// if (PINC & (1<<PC0)) {
-			// 	PORTB |= (1<<PB3);
-			// 	USART_SendByte(data1);
-			// }
-			//
-			// else {
-			// 	PORTB &= ~(1<<PB3);
-			// }
-			//
-			// if (PINC & (1<<PC7)) {
-			// 	PORTB |= (1<<PB3);
-			// 	USART_SendByte(data2);
-			// }
-			// else {
-			// 	PORTB &= ~(1<<PB3);
-			// }
-			//
+			}
+			else {
+				PORTB &= ~(1<<PB3);
+				tst_count_2 = 0;
+			}
+
 			// if (receivedByte == 'k') {
 			// 	PORTB |= (1<<PB3);
 			// }

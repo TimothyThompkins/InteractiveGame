@@ -12,7 +12,7 @@ class serial_comms():
 
         self.port = serial_port
         self.baudrate = baud_rate
-        self.stopbits = serial.STOPBITS_TWO
+        self.stopbits = serial.STOPBITS_ONE # Changed from two
         self.bytesize = serial.EIGHTBITS
 
         self._open_serial_port()
@@ -47,8 +47,6 @@ class serial_comms():
         return ''.join(chr(b) for b in arr)
 
     #def test_comms(self):
-
-
 
 
 def get_port_options(system):
