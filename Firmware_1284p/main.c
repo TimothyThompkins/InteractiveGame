@@ -12,7 +12,7 @@
 #include <util/delay.h>
 #include <avr/io.h>
 
-#include "serial_comms.h"
+#include "serial.h"
 
 /*
  Function Prototypes in Main:
