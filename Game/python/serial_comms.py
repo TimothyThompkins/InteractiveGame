@@ -67,6 +67,18 @@ def get_port_options(system):
     elif sys_platform == 'linux':
         # this is to exclude your current terminal "/dev/tty"
         ports = glob.glob('/dev/tty[A-Za-z]*')
+        result_test = []
+
+        for a_port in ports:
+            try:
+                s = serial.Serial(a_port)
+                s.close()
+                result_test.append(a_port)
+            except serial.SerialException:
+                pass
+
+        print (result_test)
+        # return result
 
     # For OSX Platforms
     elif sys_platform == 'OSX':
