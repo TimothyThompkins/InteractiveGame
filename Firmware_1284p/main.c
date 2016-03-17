@@ -17,6 +17,7 @@
 /*
  Function Prototypes in Main:
 */
+// TMT This is a comment to test make
 ISR(USART_RXC_vect);
 void pinConfig(void);
 int main(void);
