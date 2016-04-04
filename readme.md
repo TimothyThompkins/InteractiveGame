@@ -10,4 +10,4 @@ This is the current revision both unpopulated (left) and populated (right):
 
 This is the loading screen for the game, developed in python:
 
-<img src="Pictures/Game_Load_Screen.png" width="300">
+<img src="Pictures/Game_Load_Screen.png" width="500">
