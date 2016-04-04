@@ -2,5 +2,5 @@ This is a work in progress, but ultimately aspires to a space invaders-esque gam
 
 Below is the current revision of the PCB:
 
-![Alt text](Pictures/Eagle_PCB.png)
+<!-- ![Alt text](Pictures/Eagle_PCB.png) -->
 <img src="Pictures/Eagle_PCB.png" width="250">
