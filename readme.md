@@ -6,7 +6,7 @@ This is a work in progress, but ultimately aspires to a space invaders-esque gam
 
 <img src="Pictures/Eagle_PCB.png" width="250">
 
-## Current revision both unpopulated (left) and populated (right):
+## Current revision both the unpopulated (left) and populated (right) boards:
 
 <img src="Pictures/Unpopulated_and_Populated_PCB.jpeg" width="500">
 
